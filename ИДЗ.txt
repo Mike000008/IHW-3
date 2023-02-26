@@ -1,0 +1,58 @@
+import math
+
+
+def integrand(x):
+    return ((1-x**2)*(1+x**2))**(-1) * (1+x**4)**(-1/2)
+
+def trapezoidal_rule(a, b, n):
+    h = (b-a) / n
+    sum = 0.5 * (integrand(a) + integrand(b))
+    for i in range(1, n):
+        x = a + i*h
+        sum += integrand(x)
+    return h * sum
+
+
+def simpsons_rule(a, b, n):
+    if n % 2 == 1:
+        n += 1
+    h = (b-a) / n
+    sum = integrand(a) + integrand(b)
+    for i in range(1, n, 2):
+        x = a + i*h
+        sum += 4 * integrand(x)
+    for i in range(2, n-1, 2):
+        x = a + i*h
+        sum += 2 * integrand(x)
+    return h * sum / 3
+
+
+a = -1/2
+b = -2
+accuracy = 0.001
+
+n = 1
+I_prev = trapezoidal_rule(a, b, n)
+while True:
+    n *= 2
+    I = trapezoidal_rule(a, b, n)
+    if abs(I - I_prev) < accuracy:
+        break
+    I_prev = I
+
+print("Using trapezoidal rule:")
+print("Integral value: ", I)
+print("Number of subintervals: ", n)
+
+n = 1
+I_prev = simpsons_rule(a, b, n)
+while True:
+    n *= 2
+    I = simpsons_rule(a, b, n)
+    if abs(I - I_prev) < accuracy:
+        break
+    I_prev = I
+
+print("Using Simpson's rule:")
+print("Integral value: ", I)
+print("Number of subintervals: ", n)
